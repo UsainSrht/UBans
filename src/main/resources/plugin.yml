@@ -1,0 +1,3 @@
+name: UBans
+version: '${project.version}'
+main: me.usainsrht.ubans.UBans
