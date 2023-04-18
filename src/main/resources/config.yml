@@ -1,8 +1,14 @@
 storage:
-  remote: false
+  remote: true
   connection:
     host: localhost
     port: 3306
     database: 'ubans'
     username: 'root'
     password: ''
+
+messages:
+  no_permission: "&cYou don't have permission to use this command!"
+  invalid_duration: "&cEnter a valid duration. ex: 1h25m"
+  ban:
+    usage: "&c/ban <playername> [<reason>] [<duration>]"

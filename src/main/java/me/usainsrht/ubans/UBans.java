@@ -15,13 +15,14 @@ public final class UBans extends JavaPlugin {
         saveDefaultConfig();
         this.remote = getConfig().getBoolean("storage.remote");
         if (remote) {
-            this.database = new Database();
             try {
+                this.database = new Database();
                 database.createDefault();
             }
             catch (SQLException e) {
-                getLogger().severe("couldn't create tables");
+                getLogger().severe("An error occured while establishing database");
                 e.printStackTrace();
+                getServer().getPluginManager().disablePlugin(this);
             }
         }
         else {
