@@ -1,0 +1,8 @@
+storage:
+  remote: false
+  connection:
+    host: localhost
+    port: 3306
+    database: 'ubans'
+    username: 'root'
+    password: ''

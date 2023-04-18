@@ -1,3 +1,4 @@
 name: UBans
 version: '${project.version}'
 main: me.usainsrht.ubans.UBans
+api-version: 1.13
