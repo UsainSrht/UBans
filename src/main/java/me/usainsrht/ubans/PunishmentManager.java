@@ -15,12 +15,13 @@ public class PunishmentManager {
     }
 
     public void ban(UUID uuid, UUID staff, String reason) {
-        UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " banned " + UUIDUtil.getName(uuid));
+        UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " banned " + UUIDUtil.getName(uuid)
+        + " reason: " + reason);
     }
 
     public void tempBan(UUID uuid, UUID staff, String reason, long duration) {
         UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " banned " + UUIDUtil.getName(uuid)
-        + " for " + duration + "ms");
+        + " for " + duration + "ms" + " reason: " + reason);
     }
 
     public void mute(UUID uuid, UUID staff, String reason) {

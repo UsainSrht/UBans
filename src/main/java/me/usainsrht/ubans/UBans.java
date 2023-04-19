@@ -1,8 +1,11 @@
 package me.usainsrht.ubans;
 
+import me.usainsrht.ubans.command.BanCommand;
+import me.usainsrht.ubans.command.CommandHandler;
+import me.usainsrht.ubans.listener.LoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 public final class UBans extends JavaPlugin {
     private static UBans instance;
@@ -14,21 +17,19 @@ public final class UBans extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         this.remote = getConfig().getBoolean("storage.remote");
-        if (remote) {
-            try {
-                this.database = new Database();
-                database.createDefault();
-            }
-            catch (SQLException e) {
-                getLogger().severe("An error occured while establishing database");
-                e.printStackTrace();
-                getServer().getPluginManager().disablePlugin(this);
-            }
+        try {
+            this.database = new Database(remote);
         }
-        else {
-            //handle the file storage
+        catch (ClassNotFoundException e) {
+            getLogger().severe("Couldn't initialize database!");
+            e.printStackTrace();
         }
         this.punishmentManager = new PunishmentManager();
+        CommandHandler.register(new BanCommand("ban",
+                "ban command",
+                "/ban",
+                new ArrayList<>()));
+        getServer().getPluginManager().registerEvents(new LoginEvent(), this);
     }
 
     @Override

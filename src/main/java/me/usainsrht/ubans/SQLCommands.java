@@ -48,21 +48,21 @@ public enum SQLCommands {
     ),
     CREATE_PUNISHMENT(
             "INSERT INTO `punishments` " +
-                    "(`uuid`, `reason`, `staff`, `type`, `start`, `duration`, `end`) " +
+                    "(`uuid`, `type`, `reason`, `staff`, `start`, `duration`, `end`) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
 
             "INSERT INTO punishments " +
-                    "(uuid, reason, staff, type, start, duration, end) " +
+                    "(uuid, type, reason, staff, start, duration, end) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)"
     ),
     CREATE_HISTORY(
             "INSERT INTO `history` " +
-                    "(`name`, `uuid`, `reason`, `staff`, `type`, `start`, `end`, `calculation`) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "(`uuid`, `type`, `reason`, `staff`, `start`, `duration`, `end`) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
 
             "INSERT INTO history " +
-                    "(name, uuid, reason, staff, type, start, end, calculation) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                    "(uuid, type, reason, staff, start, duration, end) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)"
     ),
     SELECT_PUNISHMENT(
             "SELECT * FROM `punishments` WHERE `uuid` = ? AND `start` = ? AND `type` = ?",

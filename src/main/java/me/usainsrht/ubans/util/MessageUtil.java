@@ -1,5 +1,6 @@
 package me.usainsrht.ubans.util;
 
+import me.usainsrht.ubans.Punishment;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,5 +17,10 @@ public class MessageUtil {
 
     public static String parseColor(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public static String parsePunishment(String message, Punishment punishment) {
+
+        return message;
     }
 }
