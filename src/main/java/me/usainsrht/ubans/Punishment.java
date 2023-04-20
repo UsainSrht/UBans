@@ -10,7 +10,7 @@ public class Punishment {
     private String reason;
     private long start;
 
-    public Punishment(UUID uuid, PunishmentType type, UUID staff, String reason, long start) {
+    public Punishment(UUID uuid, PunishmentType type, String reason, UUID staff, long start) {
         this.uuid = uuid;
         this.type = type;
         this.staff = staff;

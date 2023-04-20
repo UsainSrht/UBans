@@ -3,6 +3,8 @@ package me.usainsrht.ubans;
 import me.usainsrht.ubans.util.MessageUtil;
 import me.usainsrht.ubans.util.UUIDUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,8 +24,8 @@ public class PunishmentManager {
 
     public Punishment getBan(UUID uuid) {
         List<Punishment> punishments = new ArrayList<>();
-        punishments.addAll(getPunishments(SQLCommands.SELECT_PUNISHMENT, PunishmentType.BAN));
-        punishments.addAll(getPunishments(SQLCommands.SELECT_PUNISHMENT, PunishmentType.TEMP_BAN));
+        punishments.addAll(getPunishments(SQLCommands.SELECT_PUNISHMENT, uuid.toString(), PunishmentType.BAN.toString()));
+        punishments.addAll(getPunishments(SQLCommands.SELECT_PUNISHMENT, uuid.toString(), PunishmentType.TEMP_BAN.toString()));
         return punishments.isEmpty() ? null : punishments.get(0);
     }
 
@@ -32,16 +34,16 @@ public class PunishmentManager {
             return new Punishment(
                     UUID.fromString(resultSet.getString("uuid")),
                     PunishmentType.valueOf(resultSet.getString("type")),
-                    UUID.fromString(resultSet.getString("staff")),
                     resultSet.getString("reason"),
+                    UUID.fromString(resultSet.getString("staff")),
                     resultSet.getLong("start")
             );
         }
         return new TemporaryPunishment(
                 UUID.fromString(resultSet.getString("uuid")),
                 PunishmentType.valueOf(resultSet.getString("type")),
-                UUID.fromString(resultSet.getString("staff")),
                 resultSet.getString("reason"),
+                UUID.fromString(resultSet.getString("staff")),
                 resultSet.getLong("start"),
                 resultSet.getLong("duration"),
                 resultSet.getLong("end")
@@ -67,22 +69,21 @@ public class PunishmentManager {
         Punishment punishment = new Punishment(
                 uuid,
                 PunishmentType.TEMP_BAN,
-                staff,
                 reason,
+                staff,
                 System.currentTimeMillis()
         );
-        List<String> chatMessage = UBans.getInstance().getConfig().getStringList("messages.tempban.chat");
-        chatMessage.replaceAll(line -> {
-            line = MessageUtil.parseColor(line);
-            return MessageUtil.parsePunishment(line, punishment);
-        });
-        String finalChatMessage = String.join("\n", chatMessage);
-        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(finalChatMessage));
+        OfflinePlayer offlinePlayer = UUIDUtil.getOfflinePlayer(uuid);
+        if (offlinePlayer.isOnline()) {
+            ((Player)offlinePlayer).kickPlayer(MessageUtil.getBannedScreen(punishment));
+        }
+        String chatMessage = MessageUtil.getBannedChatMessage(punishment);
+        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(chatMessage));
         UBans.getInstance().getBansDatabase().runSQL(SQLCommands.CREATE_PUNISHMENT,
                 uuid.toString(),
                 PunishmentType.BAN.toString(),
-                staff.toString(),
                 reason,
+                staff.toString(),
                 System.currentTimeMillis(),
                 0,
                 0
@@ -93,24 +94,23 @@ public class PunishmentManager {
         TemporaryPunishment temporaryPunishment = new TemporaryPunishment(
                 uuid,
                 PunishmentType.TEMP_BAN,
-                staff,
                 reason,
+                staff,
                 System.currentTimeMillis(),
                 duration,
                 System.currentTimeMillis() + duration
         );
-        List<String> chatMessage = UBans.getInstance().getConfig().getStringList("messages.tempban.chat");
-        chatMessage.replaceAll(line -> {
-            line = MessageUtil.parseColor(line);
-            return MessageUtil.parsePunishment(line, temporaryPunishment);
-        });
-        String finalChatMessage = String.join("\n", chatMessage);
-        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(finalChatMessage));
+        OfflinePlayer offlinePlayer = UUIDUtil.getOfflinePlayer(uuid);
+        if (offlinePlayer.isOnline()) {
+            ((Player)offlinePlayer).kickPlayer(MessageUtil.getBannedScreen(temporaryPunishment));
+        }
+        String chatMessage = MessageUtil.getBannedChatMessage(temporaryPunishment);
+        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(chatMessage));
         UBans.getInstance().getBansDatabase().runSQL(SQLCommands.CREATE_PUNISHMENT,
                 uuid.toString(),
                 PunishmentType.BAN.toString(),
-                staff.toString(),
                 reason,
+                staff.toString(),
                 System.currentTimeMillis(),
                 duration,
                 System.currentTimeMillis() + duration

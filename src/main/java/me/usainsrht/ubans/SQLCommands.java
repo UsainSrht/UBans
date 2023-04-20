@@ -22,7 +22,7 @@ public enum SQLCommands {
                     "staff VARCHAR(36)," +
                     "start BIGINT," +
                     "duration BIGINT," +
-                    "end BIGINT,"
+                    "end BIGINT)"
     ),
     CREATE_TABLE_HISTORY(
             "CREATE TABLE IF NOT EXISTS `history` (" +
@@ -44,7 +44,7 @@ public enum SQLCommands {
                     "staff VARCHAR(36)," +
                     "start BIGINT," +
                     "duration BIGINT," +
-                    "end BIGINT,"
+                    "end BIGINT)"
     ),
     CREATE_PUNISHMENT(
             "INSERT INTO `punishments` " +

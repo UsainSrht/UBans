@@ -6,8 +6,8 @@ public class TemporaryPunishment extends Punishment {
     private long duration;
     private long end;
 
-    public TemporaryPunishment(UUID uuid, PunishmentType type, UUID staff, String reason, long start, long duration, long end) {
-        super(uuid, type, staff, reason, start);
+    public TemporaryPunishment(UUID uuid, PunishmentType type, String reason, UUID staff, long start, long duration, long end) {
+        super(uuid, type, reason, staff, start);
         this.duration = duration;
         this.end = end;
     }

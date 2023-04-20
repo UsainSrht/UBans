@@ -53,10 +53,10 @@ public class DurationUtil {
         int hour = 0;
         int minute = 0;
         int seconds = (int)(milliseconds / 1000);
-        if (seconds > 86400 -1) {
+        if (seconds > 86400 - 1) {
             day = Math.floorDiv(seconds, 86400);
             seconds -= day * 86400;
-            timeString = timeString + hour + " day";
+            timeString = timeString + day + " day";
             if (day > 1) timeString = timeString + "s";
         }
         if (seconds > 3600 - 1) {

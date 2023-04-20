@@ -50,4 +50,19 @@ public class MessageUtil {
         });
         return String.join("\n", screen);
     }
+
+    public static String getBannedChatMessage(Punishment punishment) {
+        List<String> message;
+        if (punishment.isTemp()) {
+            message = UBans.getInstance().getConfig().getStringList("messages.tempban.chat");
+        }
+        else {
+            message = UBans.getInstance().getConfig().getStringList("messages.ban.chat");
+        }
+        message.replaceAll(line -> {
+            line = MessageUtil.parseColor(line);
+            return MessageUtil.parsePunishment(line, punishment);
+        });
+        return String.join("\n", message);
+    }
 }

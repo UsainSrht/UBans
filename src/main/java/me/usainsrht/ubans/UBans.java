@@ -19,6 +19,8 @@ public final class UBans extends JavaPlugin {
         this.remote = getConfig().getBoolean("storage.remote");
         try {
             this.database = new Database(remote);
+            database.runSQL(SQLCommands.CREATE_TABLE_PUNISHMENT);
+            database.runSQL(SQLCommands.CREATE_TABLE_HISTORY);
         }
         catch (ClassNotFoundException e) {
             getLogger().severe("Couldn't initialize database!");

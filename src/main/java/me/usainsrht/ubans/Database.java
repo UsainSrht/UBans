@@ -23,7 +23,7 @@ public class Database {
         if (remote) {
             FileConfiguration cf = ubans.getConfig();
             String host = cf.getString("storage.connection.host");
-            String port = cf.getString("storage.connection.host");
+            String port = cf.getString("storage.connection.port");
             String name = cf.getString("storage.connection.database");
             String user = cf.getString("storage.connection.username");
             String password = cf.getString("storage.connection.password");
@@ -58,7 +58,7 @@ public class Database {
     }
 
     public void runSQL(SQLCommands commands, Object... parameters) {
-        runSQL(commands, true, parameters);
+        runSQL(commands, false, parameters);
     }
 
     public ResultSet runSQLAndGet(SQLCommands commands, Object... parameters) {
