@@ -117,6 +117,12 @@ public class PunishmentManager {
         );
     }
 
+    public void unban(UUID uuid, UUID staff) {
+        Database db = UBans.getInstance().getBansDatabase();
+        int id = db.runSQLAndGet(SQLCommands.SELECT_PUNISHMENT, );
+                db.runSQL(SQLCommands.DELETE_PUNISHMENT, id);
+    }
+
     public void mute(UUID uuid, UUID staff, String reason) {
         UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " muted " + UUIDUtil.getName(uuid));
     }

@@ -2,6 +2,8 @@ package me.usainsrht.ubans;
 
 import me.usainsrht.ubans.command.BanCommand;
 import me.usainsrht.ubans.command.CommandHandler;
+import me.usainsrht.ubans.command.HistoryCommand;
+import me.usainsrht.ubans.command.UnbanCommand;
 import me.usainsrht.ubans.listener.LoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,10 +29,20 @@ public final class UBans extends JavaPlugin {
             e.printStackTrace();
         }
         this.punishmentManager = new PunishmentManager();
+
         CommandHandler.register(new BanCommand("ban",
                 "ban command",
                 "/ban",
                 new ArrayList<>()));
+        CommandHandler.register(new UnbanCommand("unban",
+                "unban command",
+                "/unban",
+                new ArrayList<>()));
+        CommandHandler.register(new HistoryCommand("history",
+                "history command",
+                "/history",
+                new ArrayList<>()));
+
         getServer().getPluginManager().registerEvents(new LoginEvent(), this);
     }
 

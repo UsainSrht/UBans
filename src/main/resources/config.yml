@@ -40,3 +40,6 @@ messages:
       - "&7Duration: &6<duration>"
       - "&7Staff: &6<staff>"
       - ""
+  unban:
+    usage: "&c/unban <playername>"
+    success: "&7You have unbanned &e<player>"
