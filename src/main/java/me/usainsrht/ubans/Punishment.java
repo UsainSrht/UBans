@@ -37,4 +37,8 @@ public class Punishment {
     public long getStart() {
         return start;
     }
+
+    public boolean isTemp() {
+        return false;
+    }
 }

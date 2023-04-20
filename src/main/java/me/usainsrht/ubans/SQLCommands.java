@@ -65,8 +65,8 @@ public enum SQLCommands {
                     "VALUES (?, ?, ?, ?, ?, ?, ?)"
     ),
     SELECT_PUNISHMENT(
-            "SELECT * FROM `punishments` WHERE `uuid` = ? AND `start` = ? AND `type` = ?",
-            "SELECT * FROM punishments WHERE uuid = ? AND start = ? AND type = ?"
+            "SELECT * FROM `punishments` WHERE `uuid` = ? AND `type` = ?",
+            "SELECT * FROM punishments WHERE uuid = ? AND type = ?"
     ),
     DELETE_PUNISHMENT(
             "DELETE FROM `punishments` WHERE `id` = ?",

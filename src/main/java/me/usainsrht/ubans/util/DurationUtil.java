@@ -46,4 +46,38 @@ public class DurationUtil {
     public static int getDurationAsTicks(String duration) {
         return (int)(getDurationAsMilliseconds(duration) / 1000 * 20);
     }
+
+    public static String getDurationAsString(long milliseconds) {
+        String timeString = "";
+        int day = 0;
+        int hour = 0;
+        int minute = 0;
+        int seconds = (int)(milliseconds / 1000);
+        if (seconds > 86400 -1) {
+            day = Math.floorDiv(seconds, 86400);
+            seconds -= day * 86400;
+            timeString = timeString + hour + " day";
+            if (day > 1) timeString = timeString + "s";
+        }
+        if (seconds > 3600 - 1) {
+            hour = Math.floorDiv(seconds, 3600);
+            seconds -= hour * 3600;
+            if (day > 0) timeString = timeString + " ";
+            timeString = timeString + hour + " hour";
+            if (hour > 1) timeString = timeString + "s";
+        }
+        if (seconds > 60 - 1) {
+            minute = Math.floorDiv(seconds, 60);
+            seconds -= minute * 60;
+            if (hour > 0) timeString = timeString + " ";
+            timeString = timeString + minute + " minute";
+            if (minute > 1) timeString = timeString + "s";
+        }
+        if (seconds > 0) {
+            if (minute > 0) timeString = timeString + " ";
+            timeString = timeString + seconds + " second";
+            if (seconds > 1) timeString = timeString + "s";
+        }
+        return timeString;
+    }
 }
