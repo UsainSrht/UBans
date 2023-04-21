@@ -1,28 +1,28 @@
 package me.usainsrht.ubans.gui;
 
-import me.usainsrht.ubans.Punishment;
-import me.usainsrht.ubans.SQLCommands;
-import me.usainsrht.ubans.TemporaryPunishment;
-import me.usainsrht.ubans.UBans;
+import me.usainsrht.ubans.*;
 import me.usainsrht.ubans.util.DurationUtil;
 import me.usainsrht.ubans.util.MessageUtil;
 import me.usainsrht.ubans.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 public class HistoryGUI {
     private UUID uuid;
     private String name;
     private int page;
     private Inventory inventory;
+    private boolean hasNextPage;
 
     public HistoryGUI(UUID uuid, int page) {
         this.page = page;
@@ -41,8 +41,17 @@ public class HistoryGUI {
         previousMeta.setDisplayName(MessageUtil.parseColor("&e<-"));
         nextPage.setItemMeta(previousMeta);
         inventory.setItem(45, previousPage);
-        List<Punishment> activePunishments = UBans.getInstance().getPunishmentManager().getPunishments(SQLCommands.SELECT_UUID_PUNISHMENTS, uuid.toString());
-        List<Punishment> punishments = UBans.getInstance().getPunishmentManager().getPunishments(SQLCommands.SELECT_UUID_HISTORY, uuid.toString());
+        int limit = 45;
+        int offset = ((page - 1) * 45);
+        PunishmentManager pm = UBans.getInstance().getPunishmentManager();
+        List<Punishment> activePunishments = pm.getPunishments(SQLCommands.SELECT_UUID_PUNISHMENTS_WITH_LIMIT_AND_OFFSET, uuid.toString(), limit, offset);
+        limit -= activePunishments.size();
+        offset -= activePunishments.size();
+        if (offset < 0) offset = 0;
+        List<Punishment> punishments = pm.getPunishments(SQLCommands.SELECT_UUID_HISTORY_WITH_LIMIT_AND_OFFSET, uuid.toString(), limit, offset);
+        if (pm.getPunishmentsCount(uuid) + pm.getHistoryCount(uuid) > page * 45) {
+            hasNextPage = true;
+        }
         int i = 0;
         for (Punishment punishment : activePunishments) {
             ItemStack item = new ItemStack(Material.LAVA_BUCKET);
@@ -58,6 +67,7 @@ public class HistoryGUI {
                 TemporaryPunishment temporaryPunishment = (TemporaryPunishment)punishment;
                 lore.add(MessageUtil.parseColor("&7duration: &6" + DurationUtil.getDurationAsString(temporaryPunishment.getDuration())));
                 lore.add(MessageUtil.parseColor("&7end: &6" + new Date(temporaryPunishment.getEnd())));
+                lore.add(MessageUtil.parseColor("&7duration left: &6" + DurationUtil.getDurationAsString(temporaryPunishment.getEnd() - System.currentTimeMillis())));
             }
             lore.add("");
             meta.setLore(lore);
@@ -79,7 +89,6 @@ public class HistoryGUI {
                 TemporaryPunishment temporaryPunishment = (TemporaryPunishment)punishment;
                 lore.add(MessageUtil.parseColor("&7duration: &6" + DurationUtil.getDurationAsString(temporaryPunishment.getDuration())));
                 lore.add(MessageUtil.parseColor("&7end: &6" + new Date(temporaryPunishment.getEnd())));
-                lore.add(MessageUtil.parseColor("&7duration left: &6" + DurationUtil.getDurationAsString(temporaryPunishment.getEnd() - System.currentTimeMillis())));
             }
             lore.add("");
             meta.setLore(lore);
@@ -100,6 +109,47 @@ public class HistoryGUI {
 
     public int getPage() {
         return page;
+    }
+
+    public boolean hasNextPage() {
+        return hasNextPage;
+    }
+
+    public boolean hasPreviousPage() {
+        return page > 1;
+    }
+
+    @Override
+    public String toString() {
+        return uuid + "," + page;
+    }
+
+    public static HistoryGUI getFromString(String string) {
+        String[] strings = string.split(",");
+        return new HistoryGUI(UUID.fromString(strings[0]), Integer.parseInt(strings[1]));
+    }
+
+    public static void open(UUID uuid, UUID target, int page) {
+        HistoryGUI historyGUI = new HistoryGUI(target, page);
+        Player player = Bukkit.getPlayer(uuid);
+        player.setMetadata("ubans-historygui", new FixedMetadataValue(UBans.getInstance(), historyGUI.toString()));
+        player.openInventory(historyGUI.getInventory());
+    }
+
+    public static void nextPage(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        HistoryGUI historyGUI = HistoryGUI.getFromString(player.getMetadata("ubans-historygui").get(0).asString());
+        if (!historyGUI.hasNextPage()) return;
+        int page = historyGUI.getPage();
+        open(uuid, historyGUI.getUuid(), page + 1);
+    }
+
+    public static void previousPage(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        HistoryGUI historyGUI = HistoryGUI.getFromString(player.getMetadata("ubans-historygui").get(0).asString());
+        if (!historyGUI.hasPreviousPage()) return;
+        int page = historyGUI.getPage();
+        open(uuid, historyGUI.getUuid(), page - 1);
     }
 
 }

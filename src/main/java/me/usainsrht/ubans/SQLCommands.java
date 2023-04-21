@@ -72,31 +72,26 @@ public enum SQLCommands {
             "DELETE FROM `punishments` WHERE `id` = ?",
             "DELETE FROM punishments WHERE id = ?"
     ),
-    DELETE_OLD_PUNISHMENTS(
-            "DELETE FROM `punishments` WHERE `end` <= ? AND `end` != -1",
-            "DELETE FROM punishments WHERE end <= ? AND end != -1"
+    SELECT_UUID_PUNISHMENTS_WITH_LIMIT_AND_OFFSET(
+            "SELECT * FROM `punishments` WHERE `uuid` = ? LIMIT ? OFFSET ?",
+            "SELECT * FROM punishments WHERE uuid = ? LIMIT ? OFFSET ?"
     ),
-    SELECT_UUID_PUNISHMENTS(
-            "SELECT * FROM `punishments` WHERE `uuid` = ?",
-            "SELECT * FROM punishments WHERE uuid = ?"
+    SELECT_UUID_HISTORY_WITH_LIMIT_AND_OFFSET(
+            "SELECT * FROM `history` WHERE `uuid` = ? LIMIT ? OFFSET ?",
+            "SELECT * FROM history WHERE uuid = ? LIMIT ? OFFSET ?"
     ),
-    SELECT_UUID_HISTORY(
-            "SELECT * FROM `history` WHERE `uuid` = ?",
-            "SELECT * FROM history WHERE uuid = ?"
+    SELECT_UUID_PUNISHMENTS_COUNT(
+            "SELECT COUNT(id) as count FROM `punishments` WHERE `uuid` = ?",
+            "SELECT COUNT(id) as count FROM punishments WHERE uuid = ?"
     ),
-    SELECT_PUNISHMENT_WITH_ID(
-            "SELECT * FROM `punishments` WHERE `id` = ?",
-            "SELECT * FROM punishments WHERE id = ?"
+    SELECT_UUID_HISTORY_COUNT(
+            "SELECT COUNT(id) as count FROM `history` WHERE `uuid` = ?",
+            "SELECT COUNT(id) as count FROM history WHERE uuid = ?"
     ),
     SELECT_EVERY_PUNISHMENT_WITH_TYPE(
             "SELECT * FROM `punishments` WHERE `type` = ?",
             "SELECT * FROM punishments WHERE type = ?"
-    ),
-    SELECT_EVERY_HISTORY(
-            "SELECT * FROM `history`",
-            "SELECT * FROM history"
     );
-
     private String mysql;
     private String hsql;
 

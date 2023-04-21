@@ -1,5 +1,6 @@
 package me.usainsrht.ubans.listener;
 
+import me.usainsrht.ubans.gui.HistoryGUI;
 import me.usainsrht.ubans.util.MessageUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,10 +14,10 @@ public class InvClickEvent implements Listener {
         if (e.getClickedInventory().getTitle().startsWith(MessageUtil.parseColor("&cHistory"))) {
             e.setCancelled(true);
             if (e.getSlot() == 53) {
-                e.getWhoClicked().sendMessage("next page");
+                HistoryGUI.nextPage(e.getWhoClicked().getUniqueId());
             }
             else if (e.getSlot() == 45) {
-                e.getWhoClicked().sendMessage("previous page");
+                HistoryGUI.previousPage(e.getWhoClicked().getUniqueId());
             }
         }
     }

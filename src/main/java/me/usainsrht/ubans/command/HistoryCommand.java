@@ -1,8 +1,5 @@
 package me.usainsrht.ubans.command;
 
-import me.usainsrht.ubans.Punishment;
-import me.usainsrht.ubans.PunishmentManager;
-import me.usainsrht.ubans.SQLCommands;
 import me.usainsrht.ubans.UBans;
 import me.usainsrht.ubans.gui.HistoryGUI;
 import me.usainsrht.ubans.util.MessageUtil;
@@ -43,10 +40,10 @@ public class HistoryCommand extends Command {
             return false;
         }*/
         if (sender instanceof Player) {
-            ((Player)sender).openInventory((new HistoryGUI(uuid, 1)).getInventory());
+            HistoryGUI.open(((Player) sender).getUniqueId(), uuid, 1);
         }
         else {
-            sender.sendMessage("&cYou must be a player to see GUI!");
+            sender.sendMessage(MessageUtil.parseColor("&cYou must be a player to see GUI!"));
         }
         return true;
     }

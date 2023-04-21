@@ -50,6 +50,34 @@ public class PunishmentManager {
                 );
     }
 
+    public int getPunishmentsCount(UUID uuid) {
+        int count = 0;
+        ResultSet resultSet = UBans.getInstance().getBansDatabase().runSQLAndGet(SQLCommands.SELECT_UUID_PUNISHMENTS_COUNT, uuid.toString());
+        try {
+            while (resultSet.next()) {
+                count += resultSet.getInt("count");
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int getHistoryCount(UUID uuid) {
+        int count = 0;
+        ResultSet resultSet = UBans.getInstance().getBansDatabase().runSQLAndGet(SQLCommands.SELECT_UUID_HISTORY_COUNT, uuid.toString());
+        try {
+            while (resultSet.next()) {
+                count += resultSet.getInt("count");
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public List<Punishment> getPunishments(SQLCommands commands, Object... parameters) {
         List<Punishment> ptList = new ArrayList<>();
 
@@ -115,6 +143,7 @@ public class PunishmentManager {
                 duration,
                 System.currentTimeMillis() + duration
         );
+        queueTempPunishment(temporaryPunishment);
     }
 
     public void unban(UUID uuid, UUID staff) {
@@ -141,7 +170,7 @@ public class PunishmentManager {
             db.runSQL(SQLCommands.DELETE_PUNISHMENT, id);
             db.runSQL(SQLCommands.CREATE_HISTORY,
                     resultSet.getString("uuid"),
-                    PunishmentType.UNBAN.toString(),
+                    resultSet.getString("type"),
                     resultSet.getString("reason"),
                     resultSet.getString("staff"),
                     resultSet.getString("start"),
@@ -178,17 +207,21 @@ public class PunishmentManager {
         List<Punishment> punishments = new ArrayList<>();
         punishments.addAll(getPunishments(SQLCommands.SELECT_EVERY_PUNISHMENT_WITH_TYPE, PunishmentType.TEMP_BAN.toString()));
         punishments.addAll(getPunishments(SQLCommands.SELECT_EVERY_PUNISHMENT_WITH_TYPE, PunishmentType.TEMP_MUTE.toString()));
-        punishments.forEach(punishment -> {
-            if (punishment.getType() == PunishmentType.TEMP_BAN) {
+        punishments.forEach(punishment -> queueTempPunishment((TemporaryPunishment)punishment));
+    }
+
+    public void queueTempPunishment(TemporaryPunishment punishment) {
+        switch (punishment.getType()) {
+            case TEMP_BAN:
                 Bukkit.getScheduler().runTaskLater(UBans.getInstance(), () -> {
                     unban(punishment.getUuid(), UUID.fromString("00000000-0000-0000-0000-000000000000"));
-                }, ((TemporaryPunishment)punishment).getDuration()/50);
-            }
-            else if (punishment.getType() == PunishmentType.TEMP_MUTE) {
+                }, punishment.getDuration() / 50);
+                break;
+            case TEMP_MUTE:
                 Bukkit.getScheduler().runTaskLater(UBans.getInstance(), () -> {
                     unmute(punishment.getUuid(), UUID.fromString("00000000-0000-0000-0000-000000000000"));
-                }, ((TemporaryPunishment)punishment).getDuration()/50);
-            }
-        });
+                }, punishment.getDuration() / 50);
+                break;
+        }
     }
 }

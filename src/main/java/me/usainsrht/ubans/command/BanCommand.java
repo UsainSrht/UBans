@@ -57,6 +57,12 @@ public class BanCommand extends Command {
                 reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             }
         }
+        if (UBans.getInstance().getPunishmentManager().isBanned(uuid)) {
+            String already = UBans.getInstance().getConfig().getString("messages.already_banned");
+            already = already.replace("<player>", UUIDUtil.getName(uuid));
+            MessageUtil.send(sender, MessageUtil.parseColor(already));
+            return false;
+        }
         UUID staff = UUID.fromString("00000000-0000-0000-0000-000000000000");
         if (sender instanceof Player) {
             staff = UUIDUtil.getUUID(sender.getName());

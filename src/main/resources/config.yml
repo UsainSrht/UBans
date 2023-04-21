@@ -11,6 +11,7 @@ messages:
   no_permission: "&cYou don't have permission to use this command!"
   invalid_duration: "&cEnter a valid duration. ex: 1h25m"
   unbanable: "&cYou can't ban a player who has permission to ban."
+  already_banned: "&e<player> &chas already banned."
   ban:
     usage: "&c/ban <playername> [<duration>] [<reason>]"
     screen:
