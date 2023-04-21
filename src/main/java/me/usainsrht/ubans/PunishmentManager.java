@@ -108,7 +108,7 @@ public class PunishmentManager {
         Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(chatMessage));
         UBans.getInstance().getBansDatabase().runSQL(SQLCommands.CREATE_PUNISHMENT,
                 uuid.toString(),
-                PunishmentType.BAN.toString(),
+                PunishmentType.TEMP_BAN.toString(),
                 reason,
                 staff.toString(),
                 System.currentTimeMillis(),
@@ -161,6 +161,10 @@ public class PunishmentManager {
         }
     }
 
+    public void unmute(UUID uuid, UUID staff) {
+
+    }
+
     public void mute(UUID uuid, UUID staff, String reason) {
         UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " muted " + UUIDUtil.getName(uuid));
     }
@@ -168,5 +172,23 @@ public class PunishmentManager {
     public void tempMute(UUID uuid, UUID staff, String reason, long duration) {
         UBans.getInstance().getLogger().info(UUIDUtil.getName(staff) + " muted " + UUIDUtil.getName(uuid)
                 + " for " + duration + "ms");
+    }
+
+    public void queueTempPunishments() {
+        List<Punishment> punishments = new ArrayList<>();
+        punishments.addAll(getPunishments(SQLCommands.SELECT_EVERY_PUNISHMENT_WITH_TYPE, PunishmentType.TEMP_BAN.toString()));
+        punishments.addAll(getPunishments(SQLCommands.SELECT_EVERY_PUNISHMENT_WITH_TYPE, PunishmentType.TEMP_MUTE.toString()));
+        punishments.forEach(punishment -> {
+            if (punishment.getType() == PunishmentType.TEMP_BAN) {
+                Bukkit.getScheduler().runTaskLater(UBans.getInstance(), () -> {
+                    unban(punishment.getUuid(), UUID.fromString("00000000-0000-0000-0000-000000000000"));
+                }, ((TemporaryPunishment)punishment).getDuration()/50);
+            }
+            else if (punishment.getType() == PunishmentType.TEMP_MUTE) {
+                Bukkit.getScheduler().runTaskLater(UBans.getInstance(), () -> {
+                    unmute(punishment.getUuid(), UUID.fromString("00000000-0000-0000-0000-000000000000"));
+                }, ((TemporaryPunishment)punishment).getDuration()/50);
+            }
+        });
     }
 }

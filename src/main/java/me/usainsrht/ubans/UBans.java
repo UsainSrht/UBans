@@ -30,6 +30,7 @@ public final class UBans extends JavaPlugin {
             e.printStackTrace();
         }
         this.punishmentManager = new PunishmentManager();
+        punishmentManager.queueTempPunishments();
 
         CommandHandler.register(new BanCommand("ban",
                 "ban command",
@@ -46,6 +47,8 @@ public final class UBans extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new LoginEvent(), this);
         getServer().getPluginManager().registerEvents(new InvClickEvent(), this);
+
+
     }
 
     @Override

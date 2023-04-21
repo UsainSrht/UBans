@@ -88,9 +88,9 @@ public enum SQLCommands {
             "SELECT * FROM `punishments` WHERE `id` = ?",
             "SELECT * FROM punishments WHERE id = ?"
     ),
-    SELECT_EVERY_PUNISHMENTS(
-            "SELECT * FROM `punishments`",
-            "SELECT * FROM punishments"
+    SELECT_EVERY_PUNISHMENT_WITH_TYPE(
+            "SELECT * FROM `punishments` WHERE `type` = ?",
+            "SELECT * FROM punishments WHERE type = ?"
     ),
     SELECT_EVERY_HISTORY(
             "SELECT * FROM `history`",

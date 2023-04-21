@@ -33,14 +33,15 @@ public class HistoryCommand extends Command {
             return false;
         }
         UUID uuid = UUIDUtil.getUUID(args[0]);
-        PunishmentManager pm = UBans.getInstance().getPunishmentManager();
+        //dediced to skip this check when i added active punishments to the history gui
+        /*PunishmentManager pm = UBans.getInstance().getPunishmentManager();
         List<Punishment> punishments = pm.getPunishments(SQLCommands.SELECT_UUID_HISTORY, uuid.toString());
         if (punishments.isEmpty()) {
             String noRecords = UBans.getInstance().getConfig().getString("messages.history.no_history");
             noRecords = noRecords.replace("<player>", UUIDUtil.getName(uuid));
             MessageUtil.send(sender, MessageUtil.parseColor(noRecords));
             return false;
-        }
+        }*/
         if (sender instanceof Player) {
             ((Player)sender).openInventory((new HistoryGUI(uuid, 1)).getInventory());
         }
