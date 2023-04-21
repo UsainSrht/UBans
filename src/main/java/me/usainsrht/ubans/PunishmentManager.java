@@ -118,9 +118,47 @@ public class PunishmentManager {
     }
 
     public void unban(UUID uuid, UUID staff) {
-        Database db = UBans.getInstance().getBansDatabase();
-        int id = db.runSQLAndGet(SQLCommands.SELECT_PUNISHMENT, );
-                db.runSQL(SQLCommands.DELETE_PUNISHMENT, id);
+        try {
+            int id;
+            OfflinePlayer staffPlayer = UUIDUtil.getOfflinePlayer(staff);
+            Database db = UBans.getInstance().getBansDatabase();
+            ResultSet resultSet;
+            resultSet = db.runSQLAndGet(SQLCommands.SELECT_PUNISHMENT, uuid.toString(), PunishmentType.BAN.toString());
+            if (!resultSet.isBeforeFirst()) {
+                resultSet = db.runSQLAndGet(SQLCommands.SELECT_PUNISHMENT, uuid.toString(), PunishmentType.TEMP_BAN.toString());
+            }
+            if (!resultSet.isBeforeFirst()) {
+                if (staffPlayer.isOnline()) {
+                    String unbanned = UBans.getInstance().getConfig().getString("messages.unban.not_banned");
+                    unbanned = MessageUtil.parseColor(unbanned);
+                    unbanned = unbanned.replace("<player>", UUIDUtil.getName(uuid));
+                    MessageUtil.send((Player)staffPlayer, unbanned);
+                }
+                return;
+            }
+            resultSet.next();
+            id = resultSet.getInt("id");
+            db.runSQL(SQLCommands.DELETE_PUNISHMENT, id);
+            db.runSQL(SQLCommands.CREATE_HISTORY,
+                    resultSet.getString("uuid"),
+                    PunishmentType.UNBAN.toString(),
+                    resultSet.getString("reason"),
+                    resultSet.getString("staff"),
+                    resultSet.getString("start"),
+                    resultSet.getString("duration"),
+                    resultSet.getString("end")
+            );
+            if (staffPlayer.isOnline()) {
+                String unbanned = UBans.getInstance().getConfig().getString("messages.unban.success");
+                unbanned = MessageUtil.parseColor(unbanned);
+                unbanned = unbanned.replace("<player>", UUIDUtil.getName(uuid));
+                MessageUtil.send((Player)staffPlayer, unbanned);
+            }
+        }
+        catch (SQLException | NullPointerException e) {
+            UBans.getInstance().getLogger().severe("An error occured while unbanning");
+            e.printStackTrace();
+        }
     }
 
     public void mute(UUID uuid, UUID staff, String reason) {

@@ -36,7 +36,7 @@ public enum SQLCommands {
                     "`end` LONG DEFAULT NULL," +
                     "PRIMARY KEY (`id`))",
 
-            "CREATE TABLE IF NOT EXISTS punishments (" +
+            "CREATE TABLE IF NOT EXISTS history (" +
                     "id INTEGER IDENTITY PRIMARY KEY," +
                     "uuid VARCHAR(36)," +
                     "type VARCHAR(64)," +

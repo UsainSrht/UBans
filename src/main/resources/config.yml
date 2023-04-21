@@ -43,3 +43,7 @@ messages:
   unban:
     usage: "&c/unban <playername>"
     success: "&7You have unbanned &e<player>"
+    not_banned: "&e<player> &7is not banned."
+  history:
+    usage: "&c/history <playername>"
+    no_history: "&e<player> &chas no records."

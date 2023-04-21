@@ -4,6 +4,7 @@ import me.usainsrht.ubans.command.BanCommand;
 import me.usainsrht.ubans.command.CommandHandler;
 import me.usainsrht.ubans.command.HistoryCommand;
 import me.usainsrht.ubans.command.UnbanCommand;
+import me.usainsrht.ubans.listener.InvClickEvent;
 import me.usainsrht.ubans.listener.LoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,6 +45,7 @@ public final class UBans extends JavaPlugin {
                 new ArrayList<>()));
 
         getServer().getPluginManager().registerEvents(new LoginEvent(), this);
+        getServer().getPluginManager().registerEvents(new InvClickEvent(), this);
     }
 
     @Override
